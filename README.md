@@ -24,3 +24,10 @@ This version will be "reskinned" into the much loved UBC Birb
 **Who will use it?**<br/>
 Anybody who wants to relive the excitement of achieve a new high score in Flappy Bird, or anybody who would like to 
 review my work evaluate my progress!
+
+## User Stories
+- As a user, I want to be able to add my high score to a list of scores
+- As a user, I want to be able to view statistics, including the list of scores, and how many games were played
+- As a user, I want to be able to view my current score while I am playing
+- As a user, I want to be able to start a new game right away
+- As a user, I want to be able to experience an increasing level of difficulty
