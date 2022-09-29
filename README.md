@@ -1,33 +1,32 @@
-# Flappy Birb
-## An endless runner game inspired by "Flappy Bird" for CPSC 210
+# Hush
+## A password manager for CPSC 210
 
-This project was inspired by the infamous "Flappy Bird" game, released in 2013. Since its removal from all
-mobile stores, I have been craving the nostalgia and joy that this game brought me as a child. This term project gives
-me the perfect opportunity to rekindle that spark and relive the experiences from years back. 
-I hope you enjoy this game as much as I do!
+This project was inspired by the increasing number of compromised passwords on my personal accounts. With many 
+companies looking to make profit from their password managers, finding the right password manager that offers all the
+tools necessary to secure your account, without having to pay a monthly fee poses as a challenge. I decided to take 
+matters into my own hands and create a password manager that not only stores your passwords, but generates the best 
+password for you to ensure that you will never have to experience a compromised account again!
 
 **Design and Aesthetics**<br>
-This version will be "reskinned" into the much loved UBC Birb
-- Your character will be "Birb"
-- Obstacles are UBC students and Pencils
+As a frontend developer at heart, I want to ensure that users will have a easy to navigate UI, while keeping aesthetics 
+to its highest standards. With the UI libraries that Java offers, I will tinker and design to the best of my abilities.
 
 **What will this application do?**
-- The objective is for the Birb to pass through approaching obstacles 
-  - Obstacles are approaching at an increasing rate
-- Score will be incremented by 1 after each obstacle passed
-  - Scores are unlimited
-- You will lose the game when you hit the bottom of the screen or an obstacle
-- Score will reset to 0 after each game ends
-- Clicks will move Birb by a set amount
-- Leaving the screen unclicked will drop Birb
+- Allows users to input their username, password, and website
+  - This data is stored and can be retrieved on-demand
+- Users can input a length for their password, and disable certain characters from 
+    being generated
+  - Users will then be told if the password is strong, moderate, or weak
+- Displays user's passwords in UI
+- Users can search for the password they want to retrieve
 
 **Who will use it?**<br/>
-Anybody who wants to relive the excitement of achieve a new high score in Flappy Bird, or anybody who would like to 
-review my work evaluate my progress!
+Anybody who wants to keep their passwords safe and secure, those who use the same password for all of their accounts,
+or those who are tired of having their accounts compromised!
 
 ## User Stories
-- As a user, I want to be able to add my high score to a list of scores
-- As a user, I want to be able to view statistics, including the list of scores, and how many games were played
-- As a user, I want to be able to view my current score while I am playing
-- As a user, I want to be able to start a new game right away
-- As a user, I want to be able to experience an increasing level of difficulty
+- As a user, I want to be able to add my account username, password, and website name
+- As a user, I want to be able to see if the generated password is a strong password
+- As a user, I want to be able to view all my passwords and have easy access to retrieve them
+- As a user, I want to be able to select the password length, and choose to disable certain characters
+- As a user, I want to be able to search for the password associated with a certain account
