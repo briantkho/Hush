@@ -44,7 +44,6 @@ public class PasswordStorageTest {
         assertEquals(expectedPassword, removePW.getPassword());
         assertEquals(expectedEmail, removePW.getEmail());
         assertEquals(expectedAccountSite, removePW.getAccountSite());
-
     }
 
     @Test

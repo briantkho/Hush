@@ -26,6 +26,7 @@ or those who are tired of having their accounts compromised!
 
 ## User Stories
 - As a user, I want to be able to add my account email, password, and website
+- As a user, I want to be able to add multiple account details to a password storage
 - As a user, I want to be able to test my password's strength
 - As a user, I want to be able to view all my passwords and have easy access to retrieve them
 - As a user, I want to be able to select the password length, and choose to disable certain characters
