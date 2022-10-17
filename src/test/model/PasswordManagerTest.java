@@ -74,6 +74,25 @@ public class PasswordManagerTest {
     }
 
     @Test
+    public void removeMultipleDetailTest() {
+        password.addDetailEntry("inputPassword", "inputEmail", "account1");
+        password.addDetailEntry("3k(&jJK<", "email2", "account2");
+        password.addDetailEntry("3k(&jJK<*ks&", "email3", "account3");
+
+        password.removeDetail("account1");
+        password.removeDetail("account2");
+
+        HashMap<String, List<String>> expectedOuput = new HashMap<>();
+        List<String> expectedList = new ArrayList<>();
+        expectedList.add("Account: account3");
+        expectedList.add("Email: email3");
+        expectedList.add("Password: 3k(&jJK<*ks&");
+
+        expectedOuput.put("account3", expectedList);
+        assertEquals(expectedOuput, password.getAllDetails());
+    }
+
+    @Test
     public void getDetailTest() {
         password.addDetailEntry("inputPassword", "inputEmail", "account1");
 
