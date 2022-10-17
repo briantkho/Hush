@@ -2,6 +2,7 @@ package model;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.provider.Arguments;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,10 +37,24 @@ public class PasswordManagerTest {
         password.addDetailEntry("inputPassword", "inputEmail", "account1");
         password.addDetailEntry("3k(&jJK<", "email2", "account2");
         password.addDetailEntry("3k(&jJK<*ks&", "email3", "account3");
+        password.addDetailEntry("ba12bA3kK9827", "email2", "account4");
+        password.addDetailEntry("aB%$kIlw*@K*B", "email3", "account5");
+        password.addDetailEntry("ABCDEFGH", "email2", "account6");
+        password.addDetailEntry("!@#$%^&*", "email3", "account7");
+        password.addDetailEntry("bAkdImlA", "email2", "account8");
+        password.addDetailEntry("12345678", "email3", "account9");
+        password.addDetailEntry("abcdefgh", "email3", "account10");
 
         assertEquals(PasswordStrength.WEAK, password.verifyDetailEntry("account1"));
         assertEquals(PasswordStrength.MEDIUM, password.verifyDetailEntry("account2"));
         assertEquals(PasswordStrength.STRONG, password.verifyDetailEntry("account3"));
+        assertEquals(PasswordStrength.MEDIUM, password.verifyDetailEntry("account4"));
+        assertEquals(PasswordStrength.MEDIUM, password.verifyDetailEntry("account5"));
+        assertEquals(PasswordStrength.WEAK, password.verifyDetailEntry("account6"));
+        assertEquals(PasswordStrength.WEAK, password.verifyDetailEntry("account7"));
+        assertEquals(PasswordStrength.WEAK, password.verifyDetailEntry("account8"));
+        assertEquals(PasswordStrength.WEAK, password.verifyDetailEntry("account9"));
+        assertEquals(PasswordStrength.WEAK, password.verifyDetailEntry("account10"));
     }
 
     @Test
