@@ -21,6 +21,7 @@ public class HushApp {
         init();
 
         while (keepGoing) {
+            lineBreak();
             welcome();
             lineBreak();
             displayMenu();

@@ -1,6 +1,8 @@
 package model;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 import java.util.regex.Pattern;
 
@@ -19,7 +21,7 @@ public class PasswordUtils {
             String.format("[%s]{%d,}", String.format("a-zA-Z\\d%s", symbols), strongPasswordLength)
     );
 
-    private static final List<Pattern> passwordCriteriaPatterns = List.of(
+    private static List<Pattern> passwordCriteriaPatterns = Arrays.asList(
             passwordCasePattern,
             passwordNumericPattern,
             passwordSpecialCharsPattern,
