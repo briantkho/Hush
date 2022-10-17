@@ -1,5 +1,6 @@
 package model;
 
+// Represents details pertaining to a single password (password, email, account site)
 public class PasswordDetails {
     private String password;
     private String email;

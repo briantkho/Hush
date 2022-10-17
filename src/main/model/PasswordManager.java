@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+// HushApp class calls directly from here (only instantiate 1 field). Contains all necessary function calls for UI
 public class PasswordManager {
     private final PasswordStorage passwords = new PasswordStorage();
     private PasswordDetails detailEntry;

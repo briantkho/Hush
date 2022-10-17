@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.regex.Pattern;
 
+// Utility class for generating + analyzing passwords (generate password and determines password strength)
 public class PasswordUtils {
-
     private static final String LETTERS = "abcdefghigklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private static final String NUMBERS = "1234567890";
     private static final String SYMBOLS = "~`!@#$%^&*()-_+={}\\[\\]|/:;\"\\'<>,.?";

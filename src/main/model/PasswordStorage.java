@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+// Modifies hashmap of all user's passwords
 public class PasswordStorage {
     private HashMap<String, PasswordDetails> passwords = new HashMap<>();
 
