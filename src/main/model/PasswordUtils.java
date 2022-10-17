@@ -58,7 +58,6 @@ public class PasswordUtils {
         return randomPassword.toString();
     }
 
-    // REQUIRES: the user's password
     // EFFECTS: returns if the password is strong, medium, or weak
     public static PasswordStrength validatePassword(String password) {
         int passwordScore = 0;

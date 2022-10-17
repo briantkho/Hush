@@ -3,12 +3,14 @@ package model;
 public class PasswordDetails {
     private String password;
     private String email;
-    private String website;
+    private String accountSite;
 
-    public PasswordDetails(String password, String email, String website) {
+    // MODIFIES: this
+    // EFFECTS: initialize password, email, and accountSite
+    public PasswordDetails(String password, String email, String accountSite) {
         this.password = password;
         this.email = email;
-        this.website = website;
+        this.accountSite = accountSite;
     }
 
     // EFFECTS: Returns the user's password
@@ -22,7 +24,7 @@ public class PasswordDetails {
     }
 
     // EFFECTS: Returns the user's website
-    public String getWebsite() {
-        return this.website;
+    public String getAccountSite() {
+        return this.accountSite;
     }
 }

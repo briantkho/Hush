@@ -17,33 +17,33 @@ public class PasswordStorageTest {
     public void addPasswordTest() {
         String expectedPassword = "testPW";
         String expectedEmail = "testEmail";
-        String expectedWebsite = "testWebsite";
+        String expectedAccountSite = "testWebsite";
 
-        password.addPassword(expectedPassword, expectedEmail, expectedWebsite);
-        PasswordDetails expectedDetails = password.getDetails(expectedWebsite);
+        password.addPassword(expectedPassword, expectedEmail, expectedAccountSite);
+        PasswordDetails expectedDetails = password.getDetails(expectedAccountSite);
 
         assertEquals(expectedPassword, expectedDetails.getPassword());
         assertEquals(expectedEmail, expectedDetails.getEmail());
-        assertEquals(expectedWebsite, expectedDetails.getWebsite());
+        assertEquals(expectedAccountSite, expectedDetails.getAccountSite());
     }
 
     @Test
     public void removeEmptyPasswordTest() {
-        assertNull(password.removePassword("removePasswordWebsite"));
+        assertNull(password.removeAccount("removePasswordWebsite"));
     }
 
     @Test
     public void removePasswordTest() {
         String expectedPassword = "removePasswordPW";
         String expectedEmail = "removePasswordEmail";
-        String expectedWebsite = "removePasswordWebsite";
+        String expectedAccountSite = "removePasswordWebsite";
 
-        password.addPassword(expectedPassword, expectedEmail, expectedWebsite);
-        PasswordDetails removePW = password.removePassword(expectedWebsite);
+        password.addPassword(expectedPassword, expectedEmail, expectedAccountSite);
+        PasswordDetails removePW = password.removeAccount(expectedAccountSite);
 
         assertEquals(expectedPassword, removePW.getPassword());
         assertEquals(expectedEmail, removePW.getEmail());
-        assertEquals(expectedWebsite, removePW.getWebsite());
+        assertEquals(expectedAccountSite, removePW.getAccountSite());
 
     }
 
@@ -56,13 +56,13 @@ public class PasswordStorageTest {
     public void getDetailsTest() {
         String expectedPassword = "getDetailsPW";
         String expectedEmail = "getDetailsEmail";
-        String expectedWebsite = "getDetailsWebsite";
+        String expectedAccountSite = "getDetailsWebsite";
 
-        password.addPassword(expectedPassword, expectedEmail, expectedWebsite);
-        PasswordDetails expectedDetails = password.getDetails(expectedWebsite);
+        password.addPassword(expectedPassword, expectedEmail, expectedAccountSite);
+        PasswordDetails expectedDetails = password.getDetails(expectedAccountSite);
 
         assertEquals(expectedPassword, expectedDetails.getPassword());
         assertEquals(expectedEmail, expectedDetails.getEmail());
-        assertEquals(expectedWebsite, expectedDetails.getWebsite());
+        assertEquals(expectedAccountSite, expectedDetails.getAccountSite());
     }
 }
