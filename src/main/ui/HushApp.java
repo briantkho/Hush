@@ -34,7 +34,6 @@ public class HushApp {
                 processCommand(command);
             }
         }
-
         System.out.println("\nGoodbye!");
     }
 
@@ -100,7 +99,6 @@ public class HushApp {
             String websiteInput = input.next();
 
             passwords.addDetailEntry(passwordLength, specialChars, numberChars, emailInput, websiteInput);
-            System.out.println("Password successful entered!");
         } else if (genPassword == false) {
             System.out.print("Enter your password: ");
             String passwordInput = input.next();
@@ -110,7 +108,6 @@ public class HushApp {
             String websiteInput = input.next();
 
             passwords.addDetailEntry(passwordInput, emailInput, websiteInput);
-            System.out.println("Password successful entered!");
         }
     }
 

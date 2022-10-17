@@ -1,6 +1,5 @@
 package model;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -8,28 +7,28 @@ import java.util.regex.Pattern;
 
 public class PasswordUtils {
 
-    private static final String letters = "abcdefghigklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    private static final String numbers = "1234567890";
-    private static final String symbols = "~`!@#$%^&*()-_+={}\\[\\]|/:;\"\\'<>,.?";
+    private static final String LETTERS = "abcdefghigklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private static final String NUMBERS = "1234567890";
+    private static final String SYMBOLS = "~`!@#$%^&*()-_+={}\\[\\]|/:;\"\\'<>,.?";
 
     private static final Integer strongPasswordLength = 12;
 
-    private static final Pattern passwordCasePattern = Pattern.compile("(?=.*[a-z])(?=.*[A-Z])");
-    private static final Pattern passwordNumericPattern = Pattern.compile("\\d");
-    private static final Pattern passwordSpecialCharsPattern = Pattern.compile("[^a-zA-Z\\d]");
-    private static final Pattern passwordLengthPattern = Pattern.compile(
-            String.format("[%s]{%d,}", String.format("a-zA-Z\\d%s", symbols), strongPasswordLength)
+    private static final Pattern CASE_PATTERN = Pattern.compile("(?=.*[a-z])(?=.*[A-Z])");
+    private static final Pattern NUMERIC_PATTERN = Pattern.compile("\\d");
+    private static final Pattern SPECIAL_CHARS_PATTERN = Pattern.compile("[^a-zA-Z\\d]");
+    private static final Pattern LENGTH_PATTERN = Pattern.compile(
+            String.format("[%s]{%d,}", String.format("a-zA-Z\\d%s", SYMBOLS), strongPasswordLength)
     );
 
-    private static List<Pattern> passwordCriteriaPatterns = Arrays.asList(
-            passwordCasePattern,
-            passwordNumericPattern,
-            passwordSpecialCharsPattern,
-            passwordLengthPattern
+    private static final List<Pattern> PASSWORD_CRITERIA_PATTERNS = Arrays.asList(
+            CASE_PATTERN,
+            NUMERIC_PATTERN,
+            SPECIAL_CHARS_PATTERN,
+            LENGTH_PATTERN
     );
 
-    private static final Integer weakPasswordMaxScore = 2;
-    private static final Integer mediumPasswordMaxScore = 3;
+    private static final Integer WEAK_MAX_SCORE = 2;
+    private static final Integer MEDIUM_MAX_SCORE = 3;
 
     // REQUIRES: passwordLength >= 8, a true or false values for addSpecialChars and addNumbers
     // EFFECTS: generates a random password with a given length, and an option to include special characters/numbers
@@ -40,14 +39,14 @@ public class PasswordUtils {
     ) throws Exception {
         StringBuilder randomPassword = new StringBuilder();
         Random random = new Random();
-        String usedChars = letters;
+        String usedChars = LETTERS;
 
         if (addSpecialChars) {
-            usedChars = usedChars.concat(symbols);
+            usedChars = usedChars.concat(SYMBOLS);
         }
 
         if (addNumbers) {
-            usedChars = usedChars.concat(numbers);
+            usedChars = usedChars.concat(NUMBERS);
         }
 
         if (passwordLength >= 8) {
@@ -64,15 +63,15 @@ public class PasswordUtils {
     public static PasswordStrength validatePassword(String password) {
         int passwordScore = 0;
 
-        for (Pattern pattern : passwordCriteriaPatterns) {
+        for (Pattern pattern : PASSWORD_CRITERIA_PATTERNS) {
             if (pattern.matcher(password).find()) {
                 passwordScore++;
             }
         }
 
-        if (passwordScore > mediumPasswordMaxScore) {
+        if (passwordScore > MEDIUM_MAX_SCORE) {
             return PasswordStrength.STRONG;
-        } else if (passwordScore > weakPasswordMaxScore) {
+        } else if (passwordScore > WEAK_MAX_SCORE) {
             return PasswordStrength.MEDIUM;
         } else {
             return PasswordStrength.WEAK;
