@@ -31,3 +31,5 @@ or those who are tired of having their accounts compromised!
 - As a user, I want to be able to view all my passwords and have easy access to retrieve them
 - As a user, I want to be able to select the password length, and choose to disable certain characters
 - As a user, I want to be able to search for the password associated with a certain account
+- As a user, I want to be able to save all my passwords to file
+- As a user, I want to be able to load all my passwords from file
