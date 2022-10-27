@@ -30,4 +30,9 @@ public class PasswordStorage {
     public List<PasswordDetails> getAllDetails() {
         return new ArrayList<>(passwords.values());
     }
+
+    // EFFECTS: Returns the number of passwords
+    public int getPasswordNumber() {
+        return passwords.size();
+    }
 }

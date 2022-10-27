@@ -1,7 +1,10 @@
 package model;
 
+import org.json.JSONObject;
+import persistence.Writable;
+
 // Represents details pertaining to a single password (password, email, account site)
-public class PasswordDetails {
+public class PasswordDetails implements Writable {
     private String password;
     private String email;
     private String accountSite;
@@ -27,5 +30,14 @@ public class PasswordDetails {
     // EFFECTS: Returns the user's website
     public String getAccountSite() {
         return this.accountSite;
+    }
+
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("Account", accountSite);
+        json.put("Password", password);
+        json.put("Email", email);
+        return json;
     }
 }

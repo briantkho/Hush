@@ -1,11 +1,15 @@
 package model;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+import persistence.Writable;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 // HushApp class calls directly from here (only instantiate 1 field). Contains all necessary function calls for UI
-public class PasswordManager {
+public class PasswordManager implements Writable {
     private final PasswordStorage passwords = new PasswordStorage();
     private PasswordDetails detailEntry;
 
@@ -66,5 +70,26 @@ public class PasswordManager {
             listAllPasswords.put(passwords.getAllDetails().get(i).getAccountSite(), displayDetails);
         }
         return listAllPasswords;
+    }
+
+    // EFFECTS: gets number of passwords in the list from PasswordStorage
+    public int getPasswordsNumber() {
+        return passwords.getPasswordNumber();
+    }
+
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("Passwords", passwordsToJson());
+        return json;
+    }
+
+    // EFFECTS: returns a password in passwords as a JSON array
+    public JSONArray passwordsToJson() {
+        JSONArray jsonArray = new JSONArray();
+        for (PasswordDetails password : passwords.getAllDetails()) {
+            jsonArray.put(password.toJson());
+        }
+        return jsonArray;
     }
 }

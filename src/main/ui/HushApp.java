@@ -3,22 +3,32 @@ package ui;
 import model.PasswordDetails;
 import model.PasswordManager;
 import model.PasswordStorage;
+import persistence.JsonReader;
+import persistence.JsonWriter;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.*;
 
 // Password manager application
 public class HushApp {
     private PasswordManager passwords = new PasswordManager();
+    private static final String JSON_STORE = "./data/passwords.json";
+    private JsonWriter jsonWriter;
+    private JsonReader jsonReader;
     private Scanner input;
 
     // EFFECTS: runs the password manager application
-    public HushApp() throws Exception {
+    public HushApp() throws FileNotFoundException, Exception {
+        input = new Scanner(System.in);
+        jsonWriter = new JsonWriter(JSON_STORE);
+        jsonReader = new JsonReader(JSON_STORE);
         runHush();
     }
 
     // MODIFIES: this
     // EFFECTS: processes user input
-    private void runHush() throws Exception {
+    private void runHush() throws FileNotFoundException, Exception {
         boolean keepGoing = true;
         String command = null;
 
@@ -56,6 +66,10 @@ public class HushApp {
             doVerifyPassword();
         } else if (command.equals("help")) {
             displayMenu();
+        } else if (command.equals("save")) {
+            savePassword();
+        } else if (command.equals("load")) {
+            loadPassword();
         } else {
             System.out.println("Command not found: run \"help\" for a list of commands.");
         }
@@ -87,6 +101,8 @@ public class HushApp {
         System.out.println("view -> view account details");
         System.out.println("viewall -> view all account details");
         System.out.println("verify -> check password strength");
+        System.out.println("save -> save passwords");
+        System.out.println("load -> load passwords");
         System.out.println("quit -> close application");
     }
 
@@ -150,5 +166,28 @@ public class HushApp {
     // EFFECTS: gets all account details from the user
     private void doViewAllPassword() {
         System.out.println(passwords.getAllDetails());
+    }
+
+    // EFFECTS: saves passwords to file
+    private void savePassword() {
+        try {
+            jsonWriter.open();
+            jsonWriter.write(passwords);
+            jsonWriter.close();
+            System.out.println("Saved passwords to " + JSON_STORE);
+        } catch (FileNotFoundException e) {
+            System.out.println("Unable to write to file: " + JSON_STORE);
+        }
+    }
+
+    // MODIFIES: this
+    // EFFECTS: loads passwords from file
+    private void loadPassword() {
+        try {
+            passwords = jsonReader.read();
+            System.out.println("Loaded passwords from " + JSON_STORE);
+        } catch (IOException e) {
+            System.out.println("Unable to read from file: " + JSON_STORE);
+        }
     }
 }
