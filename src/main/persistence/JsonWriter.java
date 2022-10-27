@@ -1,8 +1,6 @@
 package persistence;
 
-import model.PasswordDetails;
 import model.PasswordManager;
-import model.PasswordStorage;
 import org.json.JSONObject;
 
 import java.io.File;
