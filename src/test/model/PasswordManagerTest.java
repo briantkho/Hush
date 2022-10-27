@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class PasswordManagerTest {
     private PasswordManager password;
@@ -30,6 +31,29 @@ public class PasswordManagerTest {
         assertEquals("Account: testWebsite", expectedDetails.get(0));
         assertEquals("Email: testEmail", expectedDetails.get(1));
         assertEquals("Password: testPW", expectedDetails.get(2));
+    }
+
+    @Test
+    public void addDetailEntryGeneratePWTest() {
+        String inputEmail = "testEmail";
+        String inputAccountSite = "testWebsite";
+        int passwordLength = 20;
+
+        try {
+            password.addDetailEntry(passwordLength, true, true, inputEmail, inputAccountSite);
+            String generatedPassword = PasswordUtils.generatePassword(
+                    passwordLength,
+                    true,
+                    true
+            );
+            PasswordDetails passwordDetails = new PasswordDetails(generatedPassword, inputEmail, inputAccountSite);
+
+            assertEquals(generatedPassword, passwordDetails.getPassword());
+            assertEquals("testWebsite", passwordDetails.getAccountSite());
+            assertEquals("testEmail", passwordDetails.getEmail());
+        } catch (Exception e){
+            fail("Exception thrown");
+        }
     }
 
     @Test
