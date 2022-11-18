@@ -1,5 +1,6 @@
 package model;
 
+import exceptions.InvalidFieldsException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import persistence.Writable;
@@ -28,7 +29,7 @@ public class PasswordManager implements Writable {
             boolean numberChar,
             String email,
             String accountSite
-    ) throws Exception {
+    ) throws InvalidFieldsException {
         String genPassword = PasswordUtils.generatePassword(length, specialChar, numberChar);
         detailEntry = new PasswordDetails(genPassword, email, accountSite);
         passwords.addPassword(detailEntry.getPassword(), detailEntry.getEmail(), detailEntry.getAccountSite());

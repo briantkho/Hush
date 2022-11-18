@@ -1,5 +1,7 @@
 package model;
 
+import exceptions.InvalidFieldsException;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -36,7 +38,7 @@ public class PasswordUtils {
             int passwordLength,
             boolean addSpecialChars,
             boolean addNumbers
-    ) throws Exception {
+    ) throws InvalidFieldsException {
         StringBuilder randomPassword = new StringBuilder();
         Random random = new Random();
         String usedChars = LETTERS;
@@ -54,7 +56,7 @@ public class PasswordUtils {
                 randomPassword.append(usedChars.charAt(random.nextInt(usedChars.length())));
             }
         } else {
-            throw new Exception(String.format("Invalid length: %d", passwordLength));
+            throw new InvalidFieldsException(String.format("Invalid length: %d", passwordLength));
         }
         return randomPassword.toString();
     }

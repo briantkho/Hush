@@ -35,7 +35,8 @@ or those who are tired of having their accounts compromised!
 - As a user, I want to be able to load all my passwords from file
 
 ## Instructions for Grader
-- You can add an account to a list of accounts by clicking a button labelled "Add Account" and inputting the fields
+- You can add an account to a list of accounts by clicking a button labelled "Add Account", choosing to generate a 
+password, then inputting the fields
 - You can add another account to a list of accounts by clicking a button labelled "Add Account" and inputting the fields
 - You can test a password strength by clicking a button labelled "Verify Password" and inputting the account to test
 - You can view all accounts in the list of accounts by clicking on a button labelled "View All Accounts"
