@@ -30,6 +30,18 @@ or those who are tired of having their accounts compromised!
 - As a user, I want to be able to test my password's strength
 - As a user, I want to be able to view all my passwords and have easy access to retrieve them
 - As a user, I want to be able to select the password length, and choose to disable certain characters
-- As a user, I want to be able to search for the password associated with a certain account
+- As a user, I want to be able to search for the password associated with a specific account
 - As a user, I want to be able to save all my passwords to file
 - As a user, I want to be able to load all my passwords from file
+
+## Instructions for Grader
+- You can add an account to a list of accounts by clicking a button labelled "Add Account" and inputting the fields
+- You can add another account to a list of accounts by clicking a button labelled "Add Account" and inputting the fields
+- You can test a password strength by clicking a button labelled "Verify Password" and inputting the account to test
+- You can view all accounts in the list of accounts by clicking on a button labelled "View All Accounts"
+- You can generate a password and add it to your list of accounts by clicking on "Add Account" and selecting "Yes"
+- You can choose the password length, special characters, and numbers when generating a password by clicking on 
+"Add Account" and selecting "Yes"
+- You can view a specific account by clicking a button labelled "View Account" and inputting in the account to view
+- You can save all passwords by clicking a button labelled "Save Accounts"
+- You can load all passwords by clicking a button labelled "Load Accounts"
