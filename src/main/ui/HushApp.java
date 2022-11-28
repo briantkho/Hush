@@ -60,7 +60,6 @@ public class HushApp extends JFrame {
     // MODIFIES: this
     // EFFECTS: initializes the password manager
     private void init() {
-        PasswordManager passwords = new PasswordManager();
         Scanner input = new Scanner(System.in);
         input.useDelimiter("\n");
     }

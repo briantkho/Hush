@@ -65,3 +65,9 @@ All accounts displayed
 
 Fri Nov 25 11:45:34 PST 2022
 YouTube has a MEDIUM password
+
+## Phase 4: Task 3
+If given more time to work on this project, there are changes I would make to improve the design.
+- PasswordStorage & PasswordManager classes can likely be combined into class
+- I would implement a singleton design to have 1 class operate on all the adding, and editing of a password list
+- I would remove the enum PasswordStrength as it is only called on 1 class when implementing
