@@ -30,6 +30,8 @@ public class PasswordManagerTest {
         assertEquals("Account: testWebsite", expectedDetails.get(0));
         assertEquals("Email: testEmail", expectedDetails.get(1));
         assertEquals("Password: testPW", expectedDetails.get(2));
+        assertEquals("Added Account: testWebsite",
+                new Event("Added Account: testWebsite").getDescription());
     }
 
     @Test
@@ -50,6 +52,8 @@ public class PasswordManagerTest {
             assertEquals(generatedPassword, passwordDetails.getPassword());
             assertEquals("testWebsite", passwordDetails.getAccountSite());
             assertEquals("testEmail", passwordDetails.getEmail());
+            assertEquals("Added Account: testWebsite",
+                    new Event("Added Account: testWebsite").getDescription());
         } catch (Exception e){
             fail("Exception thrown");
         }
@@ -69,6 +73,8 @@ public class PasswordManagerTest {
         password.addDetailEntry("abcdefgh", "email3", "account10");
 
         assertEquals(PasswordStrength.WEAK, password.verifyDetailEntry("account1"));
+        assertEquals("account1 has a WEAK password",
+                new Event("account1 has a WEAK password").getDescription());
         assertEquals(PasswordStrength.MEDIUM, password.verifyDetailEntry("account2"));
         assertEquals(PasswordStrength.STRONG, password.verifyDetailEntry("account3"));
         assertEquals(PasswordStrength.MEDIUM, password.verifyDetailEntry("account4"));
@@ -94,6 +100,7 @@ public class PasswordManagerTest {
 
         expectedOuput.put("account2", expectedList);
         assertEquals(expectedOuput, password.getAllDetails());
+        assertEquals("Removed account1", new Event("Removed account1").getDescription());
     }
 
     @Test
@@ -103,7 +110,9 @@ public class PasswordManagerTest {
         password.addDetailEntry("3k(&jJK<*ks&", "email3", "account3");
 
         password.removeDetail("account1");
+        assertEquals("Removed account1", new Event("Removed account1").getDescription());
         password.removeDetail("account2");
+        assertEquals("Removed account2", new Event("Removed account2").getDescription());
 
         HashMap<String, List<String>> expectedOuput = new HashMap<>();
         List<String> expectedList = new ArrayList<>();
@@ -126,6 +135,8 @@ public class PasswordManagerTest {
         expectedOutput.add("Password: inputPassword");
 
         assertEquals(expectedOutput, password.getDetail("account1"));
+        assertEquals("Account displayed: account1",
+                new Event("Account displayed: account1").getDescription());
         assertEquals(1, password.getAllDetails().size());
     }
 
@@ -150,5 +161,7 @@ public class PasswordManagerTest {
         expectedOutput.put("account2", expectedList2);
 
         assertEquals(expectedOutput, password.getAllDetails());
+        assertEquals("All accounts displayed",
+                new Event("All accounts displayed").getDescription());
     }
 }

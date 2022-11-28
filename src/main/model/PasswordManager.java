@@ -19,6 +19,7 @@ public class PasswordManager implements Writable {
     public void addDetailEntry(String password, String email, String accountSite) {
         this.detailEntry = new PasswordDetails(password, email, accountSite);
         passwords.addPassword(detailEntry.getPassword(), detailEntry.getEmail(), detailEntry.getAccountSite());
+        EventLog.getInstance().logEvent(new Event("Added Account: " + accountSite));
     }
 
     // MODIFIES: this
@@ -32,20 +33,26 @@ public class PasswordManager implements Writable {
     ) throws InvalidFieldsException {
         String genPassword = PasswordUtils.generatePassword(length, specialChar, numberChar);
         detailEntry = new PasswordDetails(genPassword, email, accountSite);
+
         passwords.addPassword(detailEntry.getPassword(), detailEntry.getEmail(), detailEntry.getAccountSite());
+        EventLog.getInstance().logEvent(new Event("Added Account (Generated): " + accountSite));
     }
 
     // EFFECTS: Determines password strength from a given account
     public PasswordStrength verifyDetailEntry(String accountSite) {
         String retrievePassword = passwords.getDetails(accountSite).getPassword();
+        PasswordStrength passwordStrength = PasswordUtils.validatePassword(retrievePassword);
 
-        return PasswordUtils.validatePassword(retrievePassword);
+        EventLog.getInstance().logEvent(new Event(accountSite + " has a " + passwordStrength + " password"));
+
+        return passwordStrength;
     }
 
     // MODIFIES: this.passwords
     // EFFECTS: Removes an account from PasswordStorage
     public void removeDetail(String accountSite) {
         passwords.removeAccount(accountSite);
+        EventLog.getInstance().logEvent(new Event("Removed " + accountSite));
     }
 
     // EFFECTS: Returns all account details in a list
@@ -55,6 +62,7 @@ public class PasswordManager implements Writable {
         displayDetails.add("Email: ".concat(passwords.getDetails(accountSite).getEmail()));
         displayDetails.add("Password: ".concat(passwords.getDetails(accountSite).getPassword()));
 
+        EventLog.getInstance().logEvent(new Event("Account displayed: " + accountSite));
         return displayDetails;
     }
 
@@ -70,12 +78,17 @@ public class PasswordManager implements Writable {
 
             listAllPasswords.put(passwords.getAllDetails().get(i).getAccountSite(), displayDetails);
         }
+
+        EventLog.getInstance().logEvent(new Event("All accounts displayed"));
         return listAllPasswords;
     }
 
     // EFFECTS: gets number of passwords in the list from PasswordStorage
     public int getPasswordsNumber() {
-        return passwords.getPasswordNumber();
+        int passwordNumber = passwords.getPasswordNumber();
+
+        EventLog.getInstance().logEvent(new Event(passwordNumber + "passwords in your account"));
+        return passwordNumber;
     }
 
     @Override

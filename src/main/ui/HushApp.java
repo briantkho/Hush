@@ -1,193 +1,591 @@
 package ui;
 
-import model.PasswordDetails;
+import exceptions.InvalidFieldsException;
+import model.Event;
+import model.EventLog;
 import model.PasswordManager;
-import model.PasswordStorage;
 import persistence.JsonReader;
 import persistence.JsonWriter;
 
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.*;
+import java.util.List;
+import java.util.Scanner;
 
-// Password manager application
-public class HushApp {
+// Represents the main window where the password manager can be used
+public class HushApp extends JFrame {
     private PasswordManager passwords = new PasswordManager();
     private static final String JSON_STORE = "./data/passwords.json";
     private JsonWriter jsonWriter;
     private JsonReader jsonReader;
-    private Scanner input;
 
-    // EFFECTS: runs the password manager application
-    public HushApp() throws FileNotFoundException, Exception {
-        input = new Scanner(System.in);
+    private final JFrame frame;
+    private JFrame menuFrame;
+
+    private JFrame addAccountMenuFrame;
+
+    // EFFECTS: runs the HushApp application
+    public HushApp() throws IOException {
+        super("Hush - Password Manager");
+
         jsonWriter = new JsonWriter(JSON_STORE);
         jsonReader = new JsonReader(JSON_STORE);
-        runHush();
-    }
 
-    // MODIFIES: this
-    // EFFECTS: processes user input
-    private void runHush() throws FileNotFoundException, Exception {
-        boolean keepGoing = true;
-        String command = null;
 
+        frame = new JFrame();
+        frame.setLayout(new GridLayout(0, 1));
+
+        JButton menuActionButton = new JButton(new MainMenu());
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(0, 1));
+        BufferedImage splashImage = ImageIO.read(getClass().getResource("/resources/images/splashLogo.png"));
+        JLabel imageHeader = new JLabel(new ImageIcon(splashImage));
+
+        panel.add(imageHeader);
+        panel.add(menuActionButton);
+
+        pageSetup(frame, panel, "Hush - Password Manager");
         init();
-
-        while (keepGoing) {
-            lineBreak();
-            welcome();
-            lineBreak();
-            displayMenu();
-            command = input.next();
-            command = command.toLowerCase().trim();
-
-            if (command.equals("quit")) {
-                keepGoing = false;
-            } else {
-                processCommand(command);
-            }
-        }
-        System.out.println("\nGoodbye!");
     }
 
     // MODIFIES: this
-    // EFFECTS: processes user command
-    private void processCommand(String command) throws Exception {
-        if (command.equals("add")) {
-            doAddPassword();
-        } else if (command.equals("remove")) {
-            doRemovePassword();
-        } else if (command.equals("view")) {
-            doViewPassword();
-        } else if (command.equals("viewall")) {
-            doViewAllPassword();
-        } else if (command.equals("verify")) {
-            doVerifyPassword();
-        } else if (command.equals("help")) {
-            displayMenu();
-        } else if (command.equals("save")) {
-            savePassword();
-        } else if (command.equals("load")) {
-            loadPassword();
-        } else {
-            System.out.println("Command not found: run \"help\" for a list of commands.");
-        }
-    }
-
-    // MODIFIES: this
-    // EFFECTS: initializes accounts
+    // EFFECTS: initializes the password manager
     private void init() {
         PasswordManager passwords = new PasswordManager();
-        input = new Scanner(System.in);
+        Scanner input = new Scanner(System.in);
         input.useDelimiter("\n");
     }
 
-    // EFFECTS: displays program introduction
-    private void welcome() {
-        System.out.println("Welcome to Hush, a safe and secure password manager!");
-    }
+    // Displays the main menu for the GUI
+    private class MainMenu extends AbstractAction {
+        MainMenu() {
+            super("Main Menu");
+        }
 
-    // EFFECTS: linebreak for better console UI
-    private void lineBreak() {
-        System.out.println(" ");
-    }
+        // EFFECTS: Performs the action of displaying the menu
+        @Override
+        public void actionPerformed(ActionEvent evt) {
+            displayMenuSetup();
+            displayMenuBody();
 
-    // EFFECTS: displays menu of options to user
-    private void displayMenu() {
-        System.out.println("Select from:");
-        System.out.println("add -> add an account");
-        System.out.println("remove -> remove an account");
-        System.out.println("view -> view account details");
-        System.out.println("viewall -> view all account details");
-        System.out.println("verify -> check password strength");
-        System.out.println("save -> save passwords");
-        System.out.println("load -> load passwords");
-        System.out.println("quit -> close application");
-    }
+            menuFrame.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosing(WindowEvent e) {
+                    EventLog el = EventLog.getInstance();
+                    for (Event event : el) {
+                        System.out.println("\n");
+                        System.out.println(event);
+                    }
+                    System.exit(0);
+                }
+            });
+        }
 
-    // MODIFIES: this
-    // EFFECTS: adds a password and generates a password if desired
-    private void doAddPassword() throws Exception {
-        System.out.print("Do you want to generate a new password? true/false: ");
-        Boolean genPassword = input.nextBoolean();
+        // EFFECTS: sets up the main information for MainMenu()
+        private void displayMenuSetup() {
+            frame.dispose();
+            menuFrame = new JFrame();
+        }
 
-        if (genPassword == true) {
-            System.out.print("Enter a password length greater or equal to 8: ");
-            int passwordLength = input.nextInt();
+        // EFFECTS: sets up the Body for MainMenu()
+        private void displayMenuBody() {
+            JButton addAccountButton = new JButton(new AddAccountMenu());
+            JButton removeAccountButton = new JButton(new RemoveAccount());
+            JButton viewAccountButton = new JButton(new ViewAccount());
+            JButton viewAllAccountButton = new JButton("View All Accounts");
+            JButton verifyPasswordButton = new JButton(new VerifyPassword());
+            JButton saveAccountsButton = new JButton("Save Accounts");
+            JButton loadAccountsButton = new JButton("Load Accounts");
 
-            System.out.print("Do you want special characters? true/false: ");
-            Boolean specialChars = input.nextBoolean();
+            JPanel menuPanel = new JPanel();
+            menuPanel.setLayout(new GridLayout(0, 1));
 
-            System.out.print("Do you want numbers? true/false: ");
-            Boolean numberChars = input.nextBoolean();
+            menuSetter(menuPanel, addAccountButton, removeAccountButton, viewAccountButton, viewAllAccountButton,
+                    verifyPasswordButton, saveAccountsButton, loadAccountsButton);
 
-            System.out.print("Enter your email: ");
-            String emailInput = input.next();
-            System.out.print("Enter your website: ");
-            String websiteInput = input.next();
+            pageSetup(menuFrame, menuPanel, "Main Menu");
+        }
 
-            passwords.addDetailEntry(passwordLength, specialChars, numberChars, emailInput, websiteInput);
-        } else if (genPassword == false) {
-            System.out.print("Enter your password: ");
-            String passwordInput = input.next();
-            System.out.print("Enter your email: ");
-            String emailInput = input.next();
-            System.out.print("Enter your website: ");
-            String websiteInput = input.next();
+        // Adds the required GUI elements to the panel of MainMenu()
+        private void menuSetter(JPanel panel, JButton addBtn, JButton removeBtn, JButton viewBtn, JButton viewAllBtn,
+                                JButton verifyBtn, JButton saveBtn, JButton loadBtn) {
+            panel.add(addBtn);
+            panel.add(removeBtn);
+            panel.add(viewBtn);
+            panel.add(viewAllBtn);
+            panel.add(verifyBtn);
+            panel.add(saveBtn);
+            panel.add(loadBtn);
 
-            passwords.addDetailEntry(passwordInput, emailInput, websiteInput);
+            saveBtn.addActionListener(e -> {
+                saveAccounts();
+                JOptionPane.showMessageDialog(null, "Accounts Saved!");
+            });
+
+            loadBtn.addActionListener(e -> {
+                loadAccounts();
+                JOptionPane.showMessageDialog(null, "Accounts Loaded!");
+            });
+
+            viewAllBtn.addActionListener(e -> {
+                viewAllAccounts();
+            });
         }
     }
 
-    // MODIFIES: this
-    // EFFECTS: removes a given account
-    private void doRemovePassword() {
-        System.out.print("Account to remove: ");
-        String removePassword = input.next();
-        passwords.removeDetail(removePassword);
+    // Displays add account menu for the GUI
+    private class AddAccountMenu extends AbstractAction {
+        AddAccountMenu() {
+            super("Add Account");
+        }
+
+        // EFFECTS: performs the action of AddAccountMenu
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            menuFrame.dispose();
+
+            addAccountMenuFrame = new JFrame();
+            JPanel addAccountMenuPanel = new JPanel();
+
+            JLabel genPasswordLabel = new JLabel("Generate a Password?");
+            JButton genPasswordTrue = new JButton(new AddAccountGen());
+            JButton genPasswordFalse = new JButton(new AddAccountNoGen());
+
+            JPanel accountMenuBody = new JPanel();
+            accountMenuBody.setLayout(new GridLayout(0, 1));
+            accountMenuBody.add(genPasswordLabel);
+            accountMenuBody.add(genPasswordTrue);
+            accountMenuBody.add(genPasswordFalse);
+
+            addAccountMenuPanel.add(accountMenuBody);
+
+            addAccountMenuFrame.setTitle("Add Account");
+            pageSetup(addAccountMenuFrame, addAccountMenuPanel, "Add Account");
+        }
     }
 
-    // EFFECTS: determines password strength on given account
-    private void doVerifyPassword() {
-        System.out.print("Account to check: ");
-        String verifyPassword = input.next();
-        System.out.println(passwords.verifyDetailEntry(verifyPassword));
+    // Displays add account generator page for the GUI
+    private class AddAccountGen extends AbstractAction {
+        private final Boolean specSelect;
+        private final Boolean numSelect;
+        private JFrame addAccountGenFrame;
+
+        AddAccountGen() {
+            super("Yes");
+            specSelect = false;
+            numSelect = false;
+        }
+
+        // EFFECTS: performs the action of AddAccountGen()
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            addAccountMenuFrame.dispose();
+
+            addAccountGenFrame = new JFrame();
+            JPanel addAccountPanel = new JPanel();
+            addAccountPanel.setLayout(new GridLayout(0, 1));
+
+            JLabel passwordLengthLabel = new JLabel("Password Length (Greater or equal to 8): ");
+            JTextField passwordLengthInput = new JTextField();
+
+            JLabel passwordSpecialCharLabel = new JLabel("Include special characters: ");
+            JRadioButton passwordSpecialCharTrue = new JRadioButton("Yes");
+            JRadioButton passwordSpecialCharFalse = new JRadioButton("No");
+
+            JLabel passwordNumberLabel = new JLabel("Include numbers: ");
+            JRadioButton passwordNumberTrue = new JRadioButton("Yes");
+            JRadioButton passwordNumberFalse = new JRadioButton("No");
+
+            JLabel emailLabel = new JLabel("Email: ");
+            JLabel websiteLabel = new JLabel("Website: ");
+            JTextField emailField = new JTextField();
+            JTextField websiteField = new JTextField();
+
+            userGenInteraction(specSelect, numSelect, addAccountPanel, passwordLengthLabel, passwordLengthInput,
+                    passwordSpecialCharLabel, passwordSpecialCharTrue, passwordSpecialCharFalse, passwordNumberLabel,
+                    passwordNumberTrue, passwordNumberFalse, emailLabel, emailField, websiteLabel, websiteField
+            );
+
+            addAccountGenFrame.setTitle("Add Account");
+            pageSetup(addAccountGenFrame, addAccountPanel, "Add Account");
+        }
+
+        // Handles the user interactions to generate a password
+        private void userGenInteraction(Boolean specSelect, Boolean numSelect, JPanel panel, JLabel pwLenLabel,
+                                        JTextField pwLen, JLabel pwSpecCharLabel, JRadioButton pwSpecCharTrue,
+                                        JRadioButton pwSpecCharFalse, JLabel pwNumLabel, JRadioButton pwNumTrue,
+                                        JRadioButton pwNumFalse, JLabel emLabel, JTextField emIn,
+                                        JLabel siteLabel, JTextField siteIn) {
+            JPanel inputPanel = new JPanel();
+            JPanel radioPanel = new JPanel();
+
+
+            ButtonGroup specCharGroup = new ButtonGroup();
+            handleRadioBtns(specCharGroup, pwSpecCharTrue, pwSpecCharFalse);
+
+            ButtonGroup numGroup = new ButtonGroup();
+            handleRadioBtns(numGroup, pwNumTrue, pwNumFalse);
+
+            JButton submitBtn = new JButton("Submit");
+            submitBtn.addActionListener(e -> {
+                try {
+                    handleGenPassword(specSelect, numSelect, pwLen, emIn, siteIn, pwSpecCharTrue, pwSpecCharFalse,
+                            pwNumTrue, pwNumFalse);
+                    toMainMenu(addAccountMenuFrame);
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
+            });
+
+            addAccountSetter(inputPanel, radioPanel, panel, pwLenLabel, pwLen, pwSpecCharLabel, pwSpecCharTrue,
+                    pwSpecCharFalse, pwNumLabel, pwNumTrue, pwNumFalse, emLabel, emIn, siteLabel, siteIn, submitBtn);
+        }
+
+        // Adds the required GUI elements to the panel of AddAccountGen()
+        private void addAccountSetter(JPanel inputPanel, JPanel radioPanel, JPanel mainPanel, JLabel pwLenLabel,
+                                      JTextField pwLen, JLabel pwSpecCharLabel, JRadioButton pwSpecCharTrue,
+                                      JRadioButton pwSpecCharFalse, JLabel pwNumLabel, JRadioButton pwNumTrue,
+                                      JRadioButton pwNumFalse, JLabel emLabel, JTextField emIn, JLabel siteLabel,
+                                      JTextField siteIn, JButton submitBtn) {
+            inputPanel.setLayout(new GridLayout(3, 2));
+            inputPanel.add(pwLenLabel);
+            inputPanel.add(pwLen);
+            inputPanel.add(emLabel);
+            inputPanel.add(emIn);
+            inputPanel.add(siteLabel);
+            inputPanel.add(siteIn);
+
+            radioPanel.setLayout(new GridLayout(0, 3));
+            radioPanel.add(pwSpecCharLabel);
+            radioPanel.add(pwSpecCharTrue);
+            radioPanel.add(pwSpecCharFalse);
+            radioPanel.add(pwNumLabel);
+            radioPanel.add(pwNumTrue);
+            radioPanel.add(pwNumFalse);
+
+            JButton homeBtn = new JButton("Main Menu");
+            homeBtn.addActionListener(event -> toMainMenu(addAccountGenFrame));
+
+            JPanel btnPanel = new JPanel();
+            btnPanel.setLayout(new GridLayout(0, 2));
+            btnPanel.add(submitBtn);
+            btnPanel.add(homeBtn);
+
+            mainPanel.add(inputPanel);
+            mainPanel.add(radioPanel);
+            mainPanel.add(btnPanel);
+        }
+
+        // Groups radio buttons in AddAccountGen()
+        private void handleRadioBtns(ButtonGroup group, JRadioButton inOne, JRadioButton inTwo) {
+            group.add(inOne);
+            group.add(inTwo);
+        }
+
+        // Adds user inputted details and generated password into the list of accounts
+        private void handleGenPassword(Boolean specSelect, Boolean numSelect, JTextField pwLen, JTextField emIn,
+                                       JTextField siteIn, JRadioButton pwSpecCharTrue, JRadioButton pwSpecCharFalse,
+                                       JRadioButton pwNumTrue, JRadioButton pwNumFalse) {
+            if (pwNumTrue.isSelected()) {
+                numSelect = true;
+            } else if (pwNumFalse.isSelected()) {
+                numSelect = false;
+            }
+
+            if (pwSpecCharTrue.isSelected()) {
+                specSelect = true;
+            } else if (pwSpecCharFalse.isSelected()) {
+                specSelect = false;
+            }
+
+            int passwordLength = Integer.parseInt(pwLen.getText());
+
+            try {
+                passwords.addDetailEntry(passwordLength, specSelect, numSelect, emIn.getText(), siteIn.getText());
+                JOptionPane.showMessageDialog(null,
+                        "Successfully added " + siteIn.getText() + "!");
+                toMainMenu(addAccountGenFrame);
+            } catch (InvalidFieldsException e) {
+                JOptionPane.showMessageDialog(null, e.getMessage());
+            }
+        }
     }
 
-    // EFFECTS: gets account details from a single account
-    private void doViewPassword() {
-        System.out.print("Account to view: ");
-        String viewPassword = input.next();
+    // Displays add account page for the GUI
+    private class AddAccountNoGen extends AbstractAction {
+        AddAccountNoGen() {
+            super("No");
+        }
 
-        System.out.println(passwords.getDetail(viewPassword));
+        // EFFECTS: performs the action of AddAccountNoGen()
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            addAccountMenuFrame.dispose();
+
+            JFrame addAccountNoGenFrame = new JFrame();
+
+            JPanel addAccountPanel = new JPanel();
+            JLabel emailLabel = new JLabel("Email: ");
+            JLabel websiteLabel = new JLabel("Website: ");
+            JLabel passwordLabel = new JLabel("Password: ");
+            JTextField emailField = new JTextField();
+            JTextField websiteField = new JTextField();
+            JTextField passwordField = new JTextField();
+
+            JButton submitBtn = new JButton("Submit");
+            submitBtn.addActionListener(event -> {
+                passwords.addDetailEntry(passwordField.getText(), emailField.getText(), websiteField.getText());
+                JOptionPane.showMessageDialog(null,
+                        "Successfully added " + websiteField.getText() + "!");
+                toMainMenu(addAccountNoGenFrame);
+            });
+
+            JButton homeBtn = new JButton("Main Menu");
+            homeBtn.addActionListener(event -> toMainMenu(addAccountNoGenFrame));
+
+            addAccountNoGenSetter(addAccountPanel, emailLabel, websiteLabel, passwordLabel, emailField, websiteField,
+                    passwordField, submitBtn, homeBtn);
+
+            pageSetup(addAccountNoGenFrame, addAccountPanel, "Add Account");
+        }
+
+        // Adds the required GUI elements to the panel of AddAccountNOGen()
+        private void addAccountNoGenSetter(JPanel panel, JLabel emLabel, JLabel siteLabel, JLabel pwLabel,
+                                           JTextField emIn, JTextField siteIn, JTextField pwIn, JButton submitBtn,
+                                           JButton homeBtn) {
+            JPanel inputPanel = new JPanel();
+            JPanel btnPanel = new JPanel();
+
+            inputPanel.setLayout(new GridLayout(3, 2));
+            inputPanel.add(emLabel);
+            inputPanel.add(emIn);
+            inputPanel.add(siteLabel);
+            inputPanel.add(siteIn);
+            inputPanel.add(pwLabel);
+            inputPanel.add(pwIn);
+
+            btnPanel.setLayout(new GridLayout(0, 2));
+            btnPanel.add(submitBtn);
+            btnPanel.add(homeBtn);
+
+            panel.setLayout(new GridLayout(0, 1));
+            panel.add(inputPanel);
+            panel.add(btnPanel);
+        }
     }
 
-    // EFFECTS: gets all account details from the user
-    private void doViewAllPassword() {
-        System.out.println(passwords.getAllDetails());
+    // Displays view account page for the GUI
+    private class ViewAccount extends AbstractAction {
+        ViewAccount() {
+            super("View Account");
+        }
+
+        // EFFECTS: performs the action of ViewAccount()
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            menuFrame.dispose();
+
+            JFrame viewAccountFrame = new JFrame();
+            JPanel viewAccountPanel = new JPanel();
+
+            viewAccountPanel.setLayout(new GridLayout(0, 2));
+
+            JLabel viewLabel = new JLabel("Account to View: ");
+            JTextField viewIn = new JTextField();
+            JButton submitBtn = new JButton("Submit");
+
+            submitBtn.addActionListener(event -> {
+                StringBuilder accountString = new StringBuilder();
+
+                for (String detail : passwords.getDetail(viewIn.getText())) {
+                    accountString.append(detail).append("\n");
+                }
+
+                JOptionPane.showMessageDialog(null, accountString.toString());
+                toMainMenu(viewAccountFrame);
+            });
+
+            JButton homeBtn = new JButton("Main Menu");
+            homeBtn.addActionListener(event -> toMainMenu(viewAccountFrame));
+
+            viewAccountPanel.add(viewLabel);
+            viewAccountPanel.add(viewIn);
+            viewAccountPanel.add(submitBtn);
+            viewAccountPanel.add(homeBtn);
+
+            pageSetup(viewAccountFrame, viewAccountPanel, "View Account");
+        }
+    }
+
+    // Displays remove account page for the GUI
+    private class RemoveAccount extends AbstractAction {
+        JFrame removeAccountFrame;
+
+        RemoveAccount() {
+            super("Remove Account");
+        }
+
+        // EFFECTS: performs the action of RemoveAccount()
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            menuFrame.dispose();
+
+            removeAccountFrame = new JFrame();
+            JPanel removeAccountPanel = new JPanel();
+
+            removeAccountPanel.setLayout(new GridLayout(0, 2));
+
+            JLabel removeLabel = new JLabel("Account to Remove: ");
+            JTextField removeIn = new JTextField();
+            JButton submitBtn = new JButton("Submit");
+
+            submitBtn.addActionListener(event -> {
+                int prevSize = passwords.getAllDetails().size();
+                passwords.removeDetail(removeIn.getText());
+
+                if (prevSize == passwords.getAllDetails().size()) {
+                    JOptionPane.showMessageDialog(null, "Failed to remove password!");
+                    toMainMenu(removeAccountFrame);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Removed " + removeIn.getText() + "!");
+                    toMainMenu(removeAccountFrame);
+                }
+            });
+
+            removeAccountSetter(removeAccountPanel, removeLabel, removeIn, submitBtn);
+            pageSetup(removeAccountFrame, removeAccountPanel, "Remove Account");
+        }
+
+        // Adds the required GUI elements to the panel of RemoveAccount()
+        private void removeAccountSetter(JPanel panel, JLabel removeLabel, JTextField removeIn, JButton submitBtn) {
+
+            JButton homeBtn = new JButton("Main Menu");
+            homeBtn.addActionListener(event -> toMainMenu(removeAccountFrame));
+
+            panel.add(removeLabel);
+            panel.add(removeIn);
+            panel.add(submitBtn);
+            panel.add(homeBtn);
+        }
+    }
+
+    // Displays view all accounts page for the GUI
+    private void viewAllAccounts() {
+        if (passwords.getAllDetails().size() == 0) {
+            JOptionPane.showMessageDialog(null,"No passwords stored!");
+        } else {
+            StringBuilder accountString = new StringBuilder();
+            for (List<String> accounts : passwords.getAllDetails().values()) {
+                accountString.append(accounts.get(0).substring(9)).append(": \n");
+                for (String account : accounts) {
+                    accountString.append(account.toString()).append("\n");
+                }
+                accountString.append("\n");
+            }
+            JOptionPane.showMessageDialog(null, accountString.toString());
+        }
+    }
+
+    // Displays verify password page for the GUI
+    private class VerifyPassword extends AbstractAction {
+        VerifyPassword() {
+            super("Verify Password");
+        }
+
+        // EFFECTS: performs the action of VerifyPassword()
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            menuFrame.dispose();
+
+            JFrame verifyPasswordFrame = new JFrame();
+            JPanel verifyPasswordPanel = new JPanel();
+            JLabel verifyLabel = new JLabel("Account to verify: ");
+            JTextField verifyIn = new JTextField();
+            JButton submitBtn = new JButton("Submit");
+            verifyPasswordPanel.setLayout(new GridLayout(0, 2));
+
+
+            verifyPasswordPanel.add(verifyLabel);
+            verifyPasswordPanel.add(verifyIn);
+            verifyPasswordPanel.add(submitBtn);
+
+            submitBtn.addActionListener(event -> {
+                JOptionPane.showMessageDialog(null,
+                        "Password is " + passwords.verifyDetailEntry(verifyIn.getText()).toString());
+                toMainMenu(verifyPasswordFrame);
+            });
+            
+            JButton homeBtn = new JButton("Main Menu");
+            homeBtn.addActionListener(event -> toMainMenu(verifyPasswordFrame));
+
+            verifyPasswordPanel.add(homeBtn);
+
+            pageSetup(verifyPasswordFrame, verifyPasswordPanel, "Verify Account");
+        }
     }
 
     // EFFECTS: saves passwords to file
-    private void savePassword() {
+    private void saveAccounts() {
         try {
             jsonWriter.open();
             jsonWriter.write(passwords);
             jsonWriter.close();
-            System.out.println("Saved passwords to " + JSON_STORE);
         } catch (FileNotFoundException e) {
-            System.out.println("Unable to write to file: " + JSON_STORE);
+            JOptionPane.showMessageDialog(null, "Unable to read from file: " + JSON_STORE);
         }
     }
 
     // MODIFIES: this
     // EFFECTS: loads passwords from file
-    private void loadPassword() {
+    private void loadAccounts() {
         try {
             passwords = jsonReader.read();
-            System.out.println("Loaded passwords from " + JSON_STORE);
         } catch (IOException e) {
-            System.out.println("Unable to read from file: " + JSON_STORE);
+            JOptionPane.showMessageDialog(null, "Unable to read from file: " + JSON_STORE);
+        }
+    }
+
+    // Opens main menu and closes current frame
+    private void toMainMenu(JFrame frame) {
+        menuFrame.setVisible(true);
+        frame.dispose();
+    }
+
+    // EFFECTS: structures the setup for frames
+    private void pageSetup(JFrame frame, JPanel panel, String title) {
+        panel.setBorder(new EmptyBorder(25, 25, 25, 25));
+        frame.add(panel, BorderLayout.CENTER);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.pack();
+        frame.setLocationRelativeTo(null);
+        frame.setTitle(title);
+        frame.setVisible(true);
+    }
+
+    // prints the log onto the console
+    private static class PrintLogAction extends AbstractAction {
+
+        PrintLogAction() {
+            super("Log");
+        }
+
+        // EFFECTS: performs the action of PrintLogAction
+        @Override
+        public void actionPerformed(ActionEvent evt) {
+            EventLog eventLog = EventLog.getInstance();
+            for (Event event : eventLog) {
+                System.out.println("\n");
+                System.out.println(event);
+            }
         }
     }
 }

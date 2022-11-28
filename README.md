@@ -46,3 +46,22 @@ password, then inputting the fields
 - You can view a specific account by clicking a button labelled "View Account" and inputting in the account to view
 - You can save all passwords by clicking a button labelled "Save Accounts"
 - You can load all passwords by clicking a button labelled "Load Accounts"
+
+## Phase 4: Task 2
+Fri Nov 25 11:45:11 PST 2022
+Added Account (Generated): YouTube
+
+Fri Nov 25 11:45:22 PST 2022
+Added Account: Gmail
+
+Fri Nov 25 11:45:27 PST 2022
+Account displayed: YouTube
+
+Fri Nov 25 11:45:29 PST 2022
+All accounts displayed
+
+Fri Nov 25 11:45:29 PST 2022
+All accounts displayed
+
+Fri Nov 25 11:45:34 PST 2022
+YouTube has a MEDIUM password
