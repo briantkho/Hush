@@ -1,5 +1,5 @@
 # Hush
-## A password manager for CPSC 210
+## A password manager made in Java
 
 This project was inspired by the increasing number of compromised passwords on my personal accounts. With many 
 companies looking to make profit from their password managers, finding the right password manager that offers all the
@@ -34,7 +34,7 @@ or those who are tired of having their accounts compromised!
 - As a user, I want to be able to save all my passwords to file
 - As a user, I want to be able to load all my passwords from file
 
-## Instructions for Grader
+## Instructions for the Viewer
 - You can add an account to a list of accounts by clicking a button labelled "Add Account", choosing to generate a 
 password, then inputting the fields
 - You can add another account to a list of accounts by clicking a button labelled "Add Account" and inputting the fields
@@ -47,26 +47,7 @@ password, then inputting the fields
 - You can save all passwords by clicking a button labelled "Save Accounts"
 - You can load all passwords by clicking a button labelled "Load Accounts"
 
-## Phase 4: Task 2
-Fri Nov 25 11:45:11 PST 2022
-Added Account (Generated): YouTube
-
-Fri Nov 25 11:45:22 PST 2022
-Added Account: Gmail
-
-Fri Nov 25 11:45:27 PST 2022
-Account displayed: YouTube
-
-Fri Nov 25 11:45:29 PST 2022
-All accounts displayed
-
-Fri Nov 25 11:45:29 PST 2022
-All accounts displayed
-
-Fri Nov 25 11:45:34 PST 2022
-YouTube has a MEDIUM password
-
-## Phase 4: Task 3
+## Future Outlook
 If given more time to work on this project, there are changes I would make to improve the design.
 - PasswordStorage & PasswordManager classes can likely be combined into class
 - I would implement a singleton design to have 1 class operate on all the adding, and editing of a password list
